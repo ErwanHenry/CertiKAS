@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CertiKAS - Blockchain Content Certification</title>
+  <meta name="description" content="Combat AI-generated fake news with blockchain-powered content certification on Kaspa">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <style>
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hover-scale:hover {
+      transform: scale(1.05);
+      transition: transform 0.3s ease;
+    }
+    .badge-certified {
+      background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    }
+    .badge-unverified {
+      background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <span class="text-2xl font-bold gradient-text">🛡️ CertiKAS</span>
+        </div>
+        <div class="flex items-center space-x-4">
+          <a href="/" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium">Home</a>
+          <a href="/dashboard" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium">Dashboard</a>
+          <a href="#verify" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium">Verify</a>
+          <a href="https://github.com/certikas" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium">GitHub</a>
+          <button id="connectWallet" class="gradient-bg text-white px-4 py-2 rounded-lg font-semibold hover:shadow-lg">
+            Connect Wallet
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="gradient-bg text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+      <div class="text-center">
+        <h1 class="text-5xl font-extrabold mb-6">
+          Fight Fake News with Blockchain
+        </h1>
+        <p class="text-xl mb-8 text-purple-100 max-w-3xl mx-auto">
+          CertiKAS provides immutable proof of content authenticity on Kaspa blockchain.
+          Certify your content, verify information sources, and restore trust in the digital age.
+        </p>
+        <div class="flex justify-center space-x-4">
+          <a href="#certify" class="bg-white text-purple-600 px-8 py-3 rounded-lg font-bold hover-scale inline-block">
+            Certify Content
+          </a>
+          <a href="#verify" class="border-2 border-white text-white px-8 py-3 rounded-lg font-bold hover:bg-white hover:text-purple-600 inline-block">
+            Verify Content
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Section -->
+  <div class="bg-white py-12 border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+        <div>
+          <div class="text-4xl font-bold gradient-text" id="statTotalCerts">0</div>
+          <div class="text-gray-600 mt-2">Total Certificates</div>
+        </div>
+        <div>
+          <div class="text-4xl font-bold gradient-text" id="statConfirmed">0</div>
+          <div class="text-gray-600 mt-2">Confirmed</div>
+        </div>
+        <div>
+          <div class="text-4xl font-bold gradient-text" id="statToday">0</div>
+          <div class="text-gray-600 mt-2">Today</div>
+        </div>
+        <div>
+          <div class="text-4xl font-bold gradient-text" id="statBlockHeight">1,234,567</div>
+          <div class="text-gray-600 mt-2">Block Height</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Certify Section -->
+  <div id="certify" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-3xl font-bold text-center mb-8">Certify Your Content</h2>
+
+    <div class="bg-white rounded-xl shadow-lg p-8">
+      <form id="certifyForm">
+        <!-- File Upload -->
+        <div class="mb-6">
+          <label class="block text-gray-700 font-semibold mb-2">Upload Content</label>
+          <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-purple-500 cursor-pointer" id="dropZone">
+            <input type="file" id="fileInput" class="hidden" accept="image/*,video/*,application/pdf,.txt">
+            <div id="dropZoneText">
+              <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <p class="mt-2 text-sm text-gray-600">Click to upload or drag and drop</p>
+              <p class="text-xs text-gray-500">Images, videos, PDFs, or text files (max 50MB)</p>
+            </div>
+            <div id="filePreview" class="hidden">
+              <p class="text-green-600 font-semibold">✓ File selected: <span id="fileName"></span></p>
+              <p class="text-sm text-gray-600 mt-1">Size: <span id="fileSize"></span></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Type -->
+        <div class="mb-6">
+          <label class="block text-gray-700 font-semibold mb-2">Content Type</label>
+          <select id="contentType" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+            <option value="article">Article</option>
+            <option value="video">Video</option>
+            <option value="image">Image</option>
+            <option value="document">Document</option>
+            <option value="audio">Audio</option>
+            <option value="tweet">Tweet/Post</option>
+          </select>
+        </div>
+
+        <!-- Metadata -->
+        <div class="mb-6">
+          <label class="block text-gray-700 font-semibold mb-2">Title (Optional)</label>
+          <input type="text" id="metaTitle" class="w-full border border-gray-300 rounded-lg px-4 py-2" placeholder="Content title">
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-gray-700 font-semibold mb-2">Description (Optional)</label>
+          <textarea id="metaDescription" class="w-full border border-gray-300 rounded-lg px-4 py-2" rows="3" placeholder="Brief description"></textarea>
+        </div>
+
+        <!-- Wallet Address -->
+        <div class="mb-6">
+          <label class="block text-gray-700 font-semibold mb-2">Kaspa Wallet Address</label>
+          <input type="text" id="walletAddress" class="w-full border border-gray-300 rounded-lg px-4 py-2" placeholder="kaspa:qr..." required>
+          <p class="text-xs text-gray-500 mt-1">Your content will be linked to this wallet address</p>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full gradient-bg text-white py-3 rounded-lg font-bold hover:shadow-lg disabled:opacity-50" id="certifyBtn">
+          <span id="certifyBtnText">Certify Content</span>
+          <span id="certifyBtnLoading" class="hidden">
+            <svg class="animate-spin inline-block h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Certifying...
+          </span>
+        </button>
+      </form>
+
+      <!-- Success Message -->
+      <div id="certifySuccess" class="hidden mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-green-800">Content Certified Successfully!</h3>
+            <div class="mt-2 text-sm text-green-700">
+              <p>Certificate ID: <span class="font-mono font-bold" id="successCertId"></span></p>
+              <p>Blockchain TX: <a href="#" id="successTxLink" class="underline" target="_blank">View on Explorer</a></p>
+              <p class="mt-2">
+                <a href="#" id="successViewCert" class="font-semibold underline">View Certificate →</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div id="certifyError" class="hidden mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+        <p class="text-red-800 font-semibold">Error: <span id="errorMessage"></span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verify Section -->
+  <div id="verify" class="bg-gray-100 py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-center mb-8">Verify Content</h2>
+
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <div class="mb-6">
+          <label class="block text-gray-700 font-semibold mb-2">Certificate ID or Content Hash</label>
+          <div class="flex">
+            <input type="text" id="verifyInput" class="flex-1 border border-gray-300 rounded-l-lg px-4 py-2" placeholder="cert_abc123... or hash">
+            <button id="verifyBtn" class="gradient-bg text-white px-6 py-2 rounded-r-lg font-semibold hover:shadow-lg">
+              Verify
+            </button>
+          </div>
+        </div>
+
+        <!-- Verification Result -->
+        <div id="verifyResult" class="hidden mt-6">
+          <!-- Will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-center mb-12">Why CertiKAS?</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Immutable Proof</h3>
+          <p class="text-gray-600">Blockchain-backed certificates that cannot be altered or deleted</p>
+        </div>
+
+        <div class="text-center">
+          <div class="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Instant Verification</h3>
+          <p class="text-gray-600">Verify content authenticity in seconds with our browser extension</p>
+        </div>
+
+        <div class="text-center">
+          <div class="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Earn Igra Rewards</h3>
+          <p class="text-gray-600">Get rewarded for certifying authentic content and building reputation</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p class="text-gray-400">© 2025 CertiKAS. Built on Kaspa blockchain. Fighting fake news, one certificate at a time.</p>
+      <div class="mt-4 space-x-4">
+        <a href="https://github.com/certikas" class="text-gray-400 hover:text-white">GitHub</a>
+        <a href="https://twitter.com/certikas" class="text-gray-400 hover:text-white">Twitter</a>
+        <a href="https://discord.gg/certikas" class="text-gray-400 hover:text-white">Discord</a>
+        <a href="/docs" class="text-gray-400 hover:text-white">API Docs</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

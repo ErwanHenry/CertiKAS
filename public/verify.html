@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Certificate - CertiKAS</title>
+  <meta name="description" content="Verify content authenticity with CertiKAS blockchain certificate">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <style>
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .certificate-card {
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <a href="/" class="text-2xl font-bold gradient-text">🛡️ CertiKAS</a>
+        </div>
+        <div class="flex items-center space-x-4">
+          <a href="/" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium">Home</a>
+          <a href="/dashboard" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium">Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Certificate Display -->
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">Certificate Verification</h1>
+      <p class="text-xl text-gray-600">Blockchain-backed proof of authenticity</p>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading" class="text-center py-12">
+      <svg class="animate-spin h-16 w-16 text-purple-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <p class="mt-4 text-gray-600">Verifying certificate...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error" class="hidden">
+      <div class="bg-red-50 border border-red-200 rounded-xl p-8 text-center">
+        <svg class="h-16 w-16 text-red-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+        </svg>
+        <h2 class="text-2xl font-bold text-red-800 mb-2">Certificate Not Found</h2>
+        <p class="text-red-700 mb-6" id="errorMessage">This certificate does not exist in our database.</p>
+        <a href="/" class="inline-block bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700">
+          Return Home
+        </a>
+      </div>
+    </div>
+
+    <!-- Certificate Card -->
+    <div id="certificate" class="hidden">
+      <div class="certificate-card bg-white rounded-xl p-8 mb-6">
+        <!-- Status Badge -->
+        <div class="flex items-center justify-between mb-6">
+          <div id="statusBadge"></div>
+          <div class="text-right">
+            <div class="text-sm text-gray-500">Certificate ID</div>
+            <div class="font-mono text-sm font-bold text-gray-900" id="certId"></div>
+          </div>
+        </div>
+
+        <!-- Certificate Details -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <h3 class="text-sm font-semibold text-gray-500 uppercase mb-2">Content Type</h3>
+            <p class="text-lg font-medium text-gray-900" id="contentType"></p>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-semibold text-gray-500 uppercase mb-2">Certified Date</h3>
+            <p class="text-lg font-medium text-gray-900" id="certifiedDate"></p>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-semibold text-gray-500 uppercase mb-2">Blockchain Confirmations</h3>
+            <p class="text-lg font-medium text-gray-900" id="confirmations"></p>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-semibold text-gray-500 uppercase mb-2">Certificate Age</h3>
+            <p class="text-lg font-medium text-gray-900" id="ageInDays"></p>
+          </div>
+        </div>
+
+        <!-- Content Hash -->
+        <div class="mb-6">
+          <h3 class="text-sm font-semibold text-gray-500 uppercase mb-2">Content Hash (SHA-256)</h3>
+          <p class="font-mono text-xs bg-gray-100 p-3 rounded break-all" id="contentHash"></p>
+        </div>
+
+        <!-- Creator -->
+        <div class="mb-6">
+          <h3 class="text-sm font-semibold text-gray-500 uppercase mb-2">Creator Wallet Address</h3>
+          <p class="font-mono text-xs bg-gray-100 p-3 rounded break-all" id="creatorWallet"></p>
+        </div>
+
+        <!-- Metadata (if available) -->
+        <div id="metadataSection" class="hidden mb-6">
+          <h3 class="text-sm font-semibold text-gray-500 uppercase mb-2">Additional Information</h3>
+          <div id="metadata" class="bg-gray-50 p-4 rounded space-y-2"></div>
+        </div>
+
+        <!-- Blockchain Transaction -->
+        <div class="mb-6">
+          <h3 class="text-sm font-semibold text-gray-500 uppercase mb-2">Blockchain Transaction</h3>
+          <p class="font-mono text-xs bg-gray-100 p-3 rounded break-all mb-2" id="txId"></p>
+          <a href="#" id="explorerLink" target="_blank" class="text-purple-600 hover:text-purple-700 font-semibold text-sm">
+            View on Kaspa Explorer →
+          </a>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex flex-wrap gap-3 pt-6 border-t">
+          <button onclick="window.print()" class="flex-1 bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200">
+            🖨️ Print Certificate
+          </button>
+          <button onclick="shareCertificate()" class="flex-1 bg-purple-100 text-purple-700 px-6 py-3 rounded-lg font-semibold hover:bg-purple-200">
+            🔗 Share Link
+          </button>
+          <button onclick="downloadQRCode()" class="flex-1 bg-green-100 text-green-700 px-6 py-3 rounded-lg font-semibold hover:bg-green-200">
+            📱 QR Code
+          </button>
+        </div>
+      </div>
+
+      <!-- What This Means -->
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
+        <h3 class="text-lg font-bold text-blue-900 mb-3">✅ What This Certificate Proves</h3>
+        <ul class="space-y-2 text-blue-800">
+          <li class="flex items-start">
+            <svg class="h-6 w-6 text-blue-600 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            <span><strong>Content Authenticity:</strong> This content was certified at the specified date and has not been altered since.</span>
+          </li>
+          <li class="flex items-start">
+            <svg class="h-6 w-6 text-blue-600 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            <span><strong>Blockchain Verification:</strong> Certificate is recorded on Kaspa blockchain and cannot be tampered with.</span>
+          </li>
+          <li class="flex items-start">
+            <svg class="h-6 w-6 text-blue-600 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            <span><strong>Creator Attribution:</strong> Content is permanently linked to the creator's Kaspa wallet address.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-8 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p class="text-gray-400">© 2025 CertiKAS. Verified by blockchain.</p>
+      <div class="mt-4 space-x-4">
+        <a href="/" class="text-gray-400 hover:text-white">Home</a>
+        <a href="/dashboard" class="text-gray-400 hover:text-white">Dashboard</a>
+        <a href="/docs" class="text-gray-400 hover:text-white">API Docs</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const API_BASE_URL = window.location.origin + '/api/v1';
+
+    // Get certificate ID from URL
+    const certificateId = window.location.pathname.split('/verify/')[1];
+
+    // Load certificate on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!certificateId) {
+        showError('No certificate ID provided');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/verify/${certificateId}`);
+        const data = await response.json();
+
+        if (data.success && data.certificate) {
+          displayCertificate(data.certificate, data.blockchain_explorer);
+        } else {
+          throw new Error(data.error || 'Certificate not found');
+        }
+      } catch (error) {
+        showError(error.message);
+      }
+    });
+
+    function displayCertificate(cert, explorerUrl) {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('certificate').classList.remove('hidden');
+
+      // Status badge
+      const isConfirmed = cert.is_confirmed;
+      const statusHtml = isConfirmed
+        ? '<div class="inline-flex items-center px-4 py-2 rounded-full bg-green-100 text-green-800 font-semibold"><svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>Confirmed</div>'
+        : '<div class="inline-flex items-center px-4 py-2 rounded-full bg-yellow-100 text-yellow-800 font-semibold"><svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>Pending</div>';
+      document.getElementById('statusBadge').innerHTML = statusHtml;
+
+      // Basic details
+      document.getElementById('certId').textContent = cert.id;
+      document.getElementById('contentType').textContent = cert.content_type.toUpperCase();
+      document.getElementById('certifiedDate').textContent = new Date(cert.created_at).toLocaleString();
+      document.getElementById('confirmations').textContent = cert.blockchain_confirmations;
+      document.getElementById('ageInDays').textContent = `${cert.age_in_days} days`;
+      document.getElementById('contentHash').textContent = cert.content_hash;
+      document.getElementById('creatorWallet').textContent = cert.creator_wallet_address;
+      document.getElementById('txId').textContent = cert.blockchain_tx_id;
+      document.getElementById('explorerLink').href = explorerUrl;
+
+      // Metadata
+      if (cert.metadata && Object.keys(cert.metadata).length > 0) {
+        document.getElementById('metadataSection').classList.remove('hidden');
+        const metadataDiv = document.getElementById('metadata');
+        Object.entries(cert.metadata).forEach(([key, value]) => {
+          if (value) {
+            const item = document.createElement('div');
+            item.innerHTML = `<strong class="text-gray-700">${key}:</strong> <span class="text-gray-600">${value}</span>`;
+            metadataDiv.appendChild(item);
+          }
+        });
+      }
+
+      // Update page title
+      document.title = `Certificate ${cert.id} - CertiKAS`;
+    }
+
+    function showError(message) {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('error').classList.remove('hidden');
+      document.getElementById('errorMessage').textContent = message;
+    }
+
+    function shareCertificate() {
+      const url = window.location.href;
+      if (navigator.share) {
+        navigator.share({
+          title: 'CertiKAS Certificate',
+          text: 'Verified content on CertiKAS blockchain',
+          url: url
+        });
+      } else {
+        navigator.clipboard.writeText(url);
+        alert('Certificate link copied to clipboard!');
+      }
+    }
+
+    function downloadQRCode() {
+      alert('QR Code generation coming soon!');
+      // TODO: Implement QR code generation
+    }
+  </script>
+</body>
+</html>

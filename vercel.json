@@ -1,0 +1,46 @@
+{
+  "version": 2,
+  "name": "certikas",
+  "builds": [
+    {
+      "src": "src/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/health",
+      "dest": "/src/server.js"
+    },
+    {
+      "src": "/api/v1/(.*)",
+      "dest": "/src/server.js"
+    },
+    {
+      "src": "/verify/([^/]+)",
+      "dest": "/public/verify.html"
+    },
+    {
+      "src": "/dashboard",
+      "dest": "/public/dashboard.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "regions": ["cdg1"],
+  "functions": {
+    "src/server.js": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  }
+}

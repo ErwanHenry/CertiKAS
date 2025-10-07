@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - CertiKAS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+  <style>
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-card {
+      transition: transform 0.3s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <a href="/" class="text-2xl font-bold gradient-text">🛡️ CertiKAS</a>
+        </div>
+        <div class="flex items-center space-x-4">
+          <a href="/" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium">Home</a>
+          <a href="/dashboard" class="text-purple-600 border-b-2 border-purple-600 px-3 py-2 font-medium">Dashboard</a>
+          <button id="connectWallet" class="gradient-bg text-white px-4 py-2 rounded-lg font-semibold hover:shadow-lg">
+            Connect Wallet
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard Header -->
+  <div class="gradient-bg text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <h1 class="text-4xl font-bold mb-2">CertiKAS Dashboard</h1>
+      <p class="text-purple-100">Platform statistics and blockchain health monitoring</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Statistics Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <!-- Total Certificates -->
+      <div class="stat-card bg-white rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 font-semibold uppercase">Total Certificates</p>
+            <p class="text-3xl font-bold text-gray-900 mt-2" id="statTotal">0</p>
+          </div>
+          <div class="bg-purple-100 rounded-full p-3">
+            <svg class="h-8 w-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+          </div>
+        </div>
+        <p class="text-sm text-green-600 font-semibold mt-2">↑ All time</p>
+      </div>
+
+      <!-- Confirmed -->
+      <div class="stat-card bg-white rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 font-semibold uppercase">Confirmed</p>
+            <p class="text-3xl font-bold text-green-600 mt-2" id="statConfirmed">0</p>
+          </div>
+          <div class="bg-green-100 rounded-full p-3">
+            <svg class="h-8 w-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 font-semibold mt-2">✓ Blockchain verified</p>
+      </div>
+
+      <!-- Today -->
+      <div class="stat-card bg-white rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 font-semibold uppercase">Today</p>
+            <p class="text-3xl font-bold text-blue-600 mt-2" id="statToday">0</p>
+          </div>
+          <div class="bg-blue-100 rounded-full p-3">
+            <svg class="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 font-semibold mt-2">Last 24 hours</p>
+      </div>
+
+      <!-- Block Height -->
+      <div class="stat-card bg-white rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 font-semibold uppercase">Block Height</p>
+            <p class="text-3xl font-bold text-orange-600 mt-2" id="statBlockHeight">0</p>
+          </div>
+          <div class="bg-orange-100 rounded-full p-3">
+            <svg class="h-8 w-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 font-semibold mt-2">Kaspa blockchain</p>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <!-- Content Type Distribution -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Content Type Distribution</h3>
+        <canvas id="contentTypeChart" height="250"></canvas>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Certification Trend</h3>
+        <canvas id="trendChart" height="250"></canvas>
+      </div>
+    </div>
+
+    <!-- System Health -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <h3 class="text-lg font-bold text-gray-900 mb-4">System Health</h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Kaspa Blockchain -->
+        <div class="border rounded-lg p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="font-semibold text-gray-900">Kaspa Blockchain</h4>
+            <span id="kaspaStatus" class="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800">
+              ● Connected
+            </span>
+          </div>
+          <div class="space-y-2 text-sm text-gray-600">
+            <p><strong>Network:</strong> <span id="kaspaNetwork">-</span></p>
+            <p><strong>Block Height:</strong> <span id="kaspaBlockHeight">-</span></p>
+            <p><strong>Node Version:</strong> <span id="kaspaVersion">-</span></p>
+          </div>
+        </div>
+
+        <!-- Kasplex / Igra -->
+        <div class="border rounded-lg p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="font-semibold text-gray-900">Igra Token Bridge</h4>
+            <span id="igraStatus" class="px-3 py-1 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800">
+              ⚠ Awaiting Launch
+            </span>
+          </div>
+          <div class="space-y-2 text-sm text-gray-600">
+            <p><strong>Token:</strong> <span id="igraToken">IGRA</span></p>
+            <p><strong>Status:</strong> <span id="igraBridgeStatus">-</span></p>
+            <p><strong>Total Supply:</strong> <span id="igraSupply">-</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Certificates (Mock) -->
+    <div class="bg-white rounded-xl shadow-lg p-6">
+      <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Certifications</h3>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Certificate ID</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Type</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Status</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Date</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200" id="recentCertificates">
+            <tr>
+              <td colspan="5" class="px-4 py-8 text-center text-gray-500">
+                No certifications yet. Be the first to certify content!
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-8 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p class="text-gray-400">© 2025 CertiKAS. Real-time dashboard powered by Kaspa blockchain.</p>
+    </div>
+  </footer>
+
+  <script>
+    const API_BASE_URL = window.location.origin + '/api/v1';
+    let contentTypeChart, trendChart;
+
+    // Initialize dashboard
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadStatistics();
+      await loadSystemHealth();
+      initializeCharts();
+
+      // Auto-refresh every 30 seconds
+      setInterval(async () => {
+        await loadStatistics();
+        await loadSystemHealth();
+      }, 30000);
+    });
+
+    // Load statistics
+    async function loadStatistics() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/statistics`);
+        const data = await response.json();
+
+        if (data.success) {
+          const stats = data.statistics;
+          document.getElementById('statTotal').textContent = stats.totalCertificates.toLocaleString();
+          document.getElementById('statConfirmed').textContent = stats.confirmedCertificates.toLocaleString();
+          document.getElementById('statToday').textContent = stats.certificationsToday.toLocaleString();
+
+          // Update chart data
+          updateContentTypeChart(stats.byContentType || {});
+        }
+      } catch (error) {
+        console.error('Failed to load statistics:', error);
+      }
+    }
+
+    // Load system health
+    async function loadSystemHealth() {
+      try {
+        // Kaspa health
+        const kaspaResponse = await fetch(`${API_BASE_URL}/blockchain/health`);
+        const kaspaData = await kaspaResponse.json();
+
+        if (kaspaData.success) {
+          const kaspa = kaspaData.blockchain;
+          document.getElementById('kaspaNetwork').textContent = kaspa.network || 'Unknown';
+          document.getElementById('kaspaBlockHeight').textContent = (kaspa.blockHeight || 0).toLocaleString();
+          document.getElementById('kaspaVersion').textContent = kaspa.nodeVersion || 'Unknown';
+          document.getElementById('statBlockHeight').textContent = (kaspa.blockHeight || 0).toLocaleString();
+
+          if (kaspa.connected) {
+            document.getElementById('kaspaStatus').className = 'px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800';
+            document.getElementById('kaspaStatus').textContent = '● Connected';
+          }
+        }
+
+        // Igra status
+        const igraResponse = await fetch(`${API_BASE_URL}/igra/status`);
+        const igraData = await igraResponse.json();
+
+        if (igraData.success) {
+          document.getElementById('igraToken').textContent = igraData.igra_token.symbol || 'IGRA';
+          document.getElementById('igraBridgeStatus').textContent = igraData.igra_token.status || 'Awaiting launch';
+          document.getElementById('igraSupply').textContent = igraData.igra_token.totalSupply
+            ? igraData.igra_token.totalSupply.toLocaleString()
+            : 'Not deployed';
+        }
+      } catch (error) {
+        console.error('Failed to load system health:', error);
+      }
+    }
+
+    // Initialize charts
+    function initializeCharts() {
+      // Content Type Chart
+      const ctx1 = document.getElementById('contentTypeChart').getContext('2d');
+      contentTypeChart = new Chart(ctx1, {
+        type: 'doughnut',
+        data: {
+          labels: ['Article', 'Video', 'Image', 'Document', 'Audio', 'Tweet'],
+          datasets: [{
+            data: [0, 0, 0, 0, 0, 0],
+            backgroundColor: [
+              '#667eea',
+              '#764ba2',
+              '#f093fb',
+              '#4facfe',
+              '#43e97b',
+              '#fa709a'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+
+      // Trend Chart (mock data)
+      const ctx2 = document.getElementById('trendChart').getContext('2d');
+      trendChart = new Chart(ctx2, {
+        type: 'line',
+        data: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          datasets: [{
+            label: 'Certifications',
+            data: [12, 19, 8, 15, 25, 18, 22],
+            borderColor: '#667eea',
+            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    // Update content type chart
+    function updateContentTypeChart(byType) {
+      const data = [
+        byType.article || 0,
+        byType.video || 0,
+        byType.image || 0,
+        byType.document || 0,
+        byType.audio || 0,
+        byType.tweet || 0
+      ];
+
+      if (contentTypeChart) {
+        contentTypeChart.data.datasets[0].data = data;
+        contentTypeChart.update();
+      }
+    }
+
+    // Connect wallet
+    document.getElementById('connectWallet').addEventListener('click', () => {
+      const walletAddress = prompt('Enter your Kaspa wallet address:');
+      if (walletAddress && walletAddress.startsWith('kaspa:')) {
+        localStorage.setItem('certikas_wallet', walletAddress);
+        document.getElementById('connectWallet').textContent = walletAddress.substring(0, 15) + '...';
+        document.getElementById('connectWallet').classList.remove('gradient-bg');
+        document.getElementById('connectWallet').classList.add('bg-green-500');
+      } else {
+        alert('Invalid Kaspa wallet address');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -5,8 +5,13 @@
 CertiKAS is a revolutionary platform built on Kaspa blockchain that provides immutable proof of content authenticity. As AI-generated fake content floods the internet, CertiKAS offers a transparent, decentralized solution to verify and certify genuine information.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub Stars](https://img.shields.io/github/stars/ErwanHenry/CertiKAS?style=social)](https://github.com/ErwanHenry/CertiKAS)
+[![GitHub Issues](https://img.shields.io/github/issues/ErwanHenry/CertiKAS)](https://github.com/ErwanHenry/CertiKAS/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/ErwanHenry/CertiKAS)](https://github.com/ErwanHenry/CertiKAS/pulls)
 [![Kaspa](https://img.shields.io/badge/Blockchain-Kaspa-blue)](https://kaspa.org)
 [![Kasplex](https://img.shields.io/badge/Smart%20Contracts-Kasplex-green)](https://kasplex.org)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 ---
 

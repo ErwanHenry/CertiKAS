@@ -1,0 +1,49 @@
+name: ❓ Question
+description: Ask a question about CertiKAS
+title: "[QUESTION] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a question? Check our [documentation](https://github.com/ErwanHenry/CertiKAS/tree/main/docs) first!
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: How do I...?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Question Category
+      options:
+        - Getting Started
+        - API Usage
+        - Blockchain Integration
+        - Deployment
+        - Security
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Provide any additional context that might help us answer your question
+      placeholder: I'm trying to... but...
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have checked the documentation
+          required: true
+        - label: I have searched existing issues
+          required: true

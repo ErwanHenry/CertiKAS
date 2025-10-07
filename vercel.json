@@ -1,40 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "npm install",
-  "routes": [
-    {
-      "src": "/health",
-      "dest": "/src/server.js"
-    },
-    {
-      "src": "/api/v1/(.*)",
-      "dest": "/src/server.js"
-    },
-    {
-      "src": "/verify/([^/]+)",
-      "dest": "/public/verify.html"
-    },
-    {
-      "src": "/dashboard",
-      "dest": "/public/dashboard.html"
-    },
-    {
-      "src": "/(.*\\.(html|css|js|json|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot))",
-      "dest": "/public/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/public/index.html"
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "regions": ["cdg1"],
-  "functions": {
-    "src/server.js": {
-      "memory": 1024,
-      "maxDuration": 30
-    }
-  }
+  "rewrites": [
+    { "source": "/api/v1/(.*)", "destination": "/api" },
+    { "source": "/health", "destination": "/api" },
+    { "source": "/(.*)", "destination": "/public/$1" }
+  ]
 }

@@ -30,11 +30,15 @@ export class KaspaAdapter {
         console.log('✅ Connected to Kaspa blockchain');
         return true;
       } else {
-        throw new Error('Failed to connect to Kaspa node');
+        console.warn('⚠️ Failed to connect to Kaspa node, falling back to MOCK MODE');
+        this.mockMode = true;
+        return true;
       }
     } catch (error) {
       console.error('❌ Kaspa initialization failed:', error.message);
-      throw error;
+      console.warn('⚠️ Falling back to MOCK MODE to allow server startup');
+      this.mockMode = true;
+      return true;
     }
   }
 

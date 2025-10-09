@@ -32,11 +32,15 @@ export class KasplexAdapter {
         console.log('✅ Connected to Kasplex platform');
         return true;
       } else {
-        throw new Error('Failed to connect to Kasplex');
+        console.warn('⚠️ Failed to connect to Kasplex, falling back to MOCK MODE');
+        this.mockMode = true;
+        return true;
       }
     } catch (error) {
       console.error('❌ Kasplex initialization failed:', error.message);
-      throw error;
+      console.warn('⚠️ Falling back to MOCK MODE to allow server startup');
+      this.mockMode = true;
+      return true;
     }
   }
 

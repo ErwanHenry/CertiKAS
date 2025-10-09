@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   await loadStatistics();
   setupEventListeners();
+  setupWalletListeners();
   checkWalletConnection();
 });
 
@@ -302,34 +303,173 @@ function showError(message) {
   }, 5000);
 }
 
-// Connect wallet (placeholder for Kaspa wallet integration)
-async function connectWallet() {
-  // In production, integrate with Kaspa wallet browser extension
-  const walletAddress = prompt('Enter your Kaspa wallet address:');
+// Setup wallet event listeners
+function setupWalletListeners() {
+  const connectBtn = document.getElementById('connectWallet');
+  const modal = document.getElementById('walletModal');
+  const closeModal = document.getElementById('closeModal');
+  const kaswareBtn = document.getElementById('connectKasWare');
+  const webWalletBtn = document.getElementById('connectWebWallet');
+  const chaingeBtn = document.getElementById('connectChainge');
 
-  if (walletAddress && walletAddress.startsWith('kaspa:')) {
-    currentWalletAddress = walletAddress;
-    document.getElementById('walletAddress').value = walletAddress;
-    document.getElementById('connectWallet').textContent =
-      walletAddress.substring(0, 15) + '...';
-    document.getElementById('connectWallet').classList.remove('gradient-bg');
-    document.getElementById('connectWallet').classList.add('bg-green-500');
-  } else {
-    alert('Invalid Kaspa wallet address');
+  // Open modal
+  connectBtn.addEventListener('click', () => {
+    if (window.KaspaWallet.isConnected()) {
+      // Already connected, disconnect
+      disconnectWallet();
+    } else {
+      // Show wallet selection modal
+      modal.classList.remove('hidden');
+    }
+  });
+
+  // Close modal
+  closeModal.addEventListener('click', () => {
+    modal.classList.add('hidden');
+  });
+
+  // Close modal on backdrop click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.add('hidden');
+    }
+  });
+
+  // KasWare wallet
+  kaswareBtn.addEventListener('click', async () => {
+    try {
+      await connectWallet('kasware');
+      modal.classList.add('hidden');
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+
+  // Web wallet
+  webWalletBtn.addEventListener('click', async () => {
+    try {
+      await connectWallet('webwallet');
+      modal.classList.add('hidden');
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+
+  // Chainge wallet (uses KasWare API)
+  chaingeBtn.addEventListener('click', async () => {
+    try {
+      await connectWallet('kasware'); // Chainge uses KasWare API
+      modal.classList.add('hidden');
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+
+  // Listen for wallet events
+  window.KaspaWallet.on('connect', (data) => {
+    console.log('Wallet connected:', data);
+    updateWalletUI(data.address);
+    localStorage.setItem('certikas_wallet', data.address);
+    showNotification('Wallet connected successfully!', 'success');
+  });
+
+  window.KaspaWallet.on('disconnect', () => {
+    console.log('Wallet disconnected');
+    updateWalletUI(null);
+    localStorage.removeItem('certikas_wallet');
+    showNotification('Wallet disconnected', 'info');
+  });
+
+  window.KaspaWallet.on('accountChange', (address) => {
+    console.log('Account changed:', address);
+    updateWalletUI(address);
+    localStorage.setItem('certikas_wallet', address);
+    showNotification('Wallet account changed', 'info');
+  });
+
+  window.KaspaWallet.on('error', (error) => {
+    console.error('Wallet error:', error);
+    showNotification('Wallet error: ' + error.message, 'error');
+  });
+}
+
+// Connect wallet
+async function connectWallet(type = 'auto') {
+  try {
+    const result = await window.KaspaWallet.connect(type);
+    if (result.success) {
+      currentWalletAddress = result.address;
+      document.getElementById('walletAddress').value = result.address;
+      return result;
+    }
+  } catch (error) {
+    console.error('Wallet connection failed:', error);
+    throw error;
   }
 }
 
-// Check wallet connection
-function checkWalletConnection() {
-  const savedWallet = localStorage.getItem('certikas_wallet');
-  if (savedWallet) {
-    currentWalletAddress = savedWallet;
-    document.getElementById('walletAddress').value = savedWallet;
-    document.getElementById('connectWallet').textContent =
-      savedWallet.substring(0, 15) + '...';
-    document.getElementById('connectWallet').classList.remove('gradient-bg');
-    document.getElementById('connectWallet').classList.add('bg-green-500');
+// Disconnect wallet
+function disconnectWallet() {
+  window.KaspaWallet.disconnect();
+  currentWalletAddress = null;
+  document.getElementById('walletAddress').value = '';
+}
+
+// Update wallet UI
+function updateWalletUI(address) {
+  const connectBtn = document.getElementById('connectWallet');
+
+  if (address) {
+    currentWalletAddress = address;
+    document.getElementById('walletAddress').value = address;
+    connectBtn.textContent = address.substring(0, 10) + '...' + address.slice(-8);
+    connectBtn.classList.remove('gradient-bg');
+    connectBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+  } else {
+    currentWalletAddress = null;
+    document.getElementById('walletAddress').value = '';
+    connectBtn.textContent = 'Connect Wallet';
+    connectBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+    connectBtn.classList.add('gradient-bg');
   }
+}
+
+// Check wallet connection on load
+async function checkWalletConnection() {
+  try {
+    const savedWallet = localStorage.getItem('certikas_wallet');
+    if (savedWallet && window.KaspaWallet) {
+      // Try to reconnect automatically
+      const address = await window.KaspaWallet.getAddress();
+      if (address) {
+        updateWalletUI(address);
+        currentWalletAddress = address;
+      }
+    }
+  } catch (error) {
+    console.log('Auto-reconnect failed:', error);
+    localStorage.removeItem('certikas_wallet');
+  }
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+  const colors = {
+    success: 'bg-green-100 border-green-400 text-green-800',
+    error: 'bg-red-100 border-red-400 text-red-800',
+    info: 'bg-blue-100 border-blue-400 text-blue-800'
+  };
+
+  const notification = document.createElement('div');
+  notification.className = `fixed top-4 right-4 px-6 py-4 rounded-lg border ${colors[type]} shadow-lg z-50 transition-opacity`;
+  notification.textContent = message;
+
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    notification.style.opacity = '0';
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
 }
 
 // Auto-refresh statistics every 30 seconds

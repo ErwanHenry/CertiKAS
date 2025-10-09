@@ -268,6 +268,81 @@
     </div>
   </footer>
 
+  <!-- Wallet Selection Modal -->
+  <div id="walletModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 p-8">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold">Connect Wallet</h3>
+        <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <p class="text-gray-600 mb-6">Choose your preferred Kaspa wallet to connect:</p>
+
+      <!-- KasWare Wallet -->
+      <button id="connectKasWare" class="w-full flex items-center justify-between bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-4 rounded-lg hover:shadow-xl mb-3 transition">
+        <div class="flex items-center">
+          <div class="bg-white rounded-full p-2 mr-4">
+            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
+          <div class="text-left">
+            <div class="font-semibold">KasWare</div>
+            <div class="text-sm text-purple-100">Browser Extension</div>
+          </div>
+        </div>
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
+
+      <!-- Kaspa Web Wallet -->
+      <button id="connectWebWallet" class="w-full flex items-center justify-between bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-4 rounded-lg hover:shadow-xl mb-3 transition">
+        <div class="flex items-center">
+          <div class="bg-white rounded-full p-2 mr-4">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+            </svg>
+          </div>
+          <div class="text-left">
+            <div class="font-semibold">Kaspa Web Wallet</div>
+            <div class="text-sm text-blue-100">Browser-based (redirect)</div>
+          </div>
+        </div>
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
+
+      <!-- Chainge Wallet -->
+      <button id="connectChainge" class="w-full flex items-center justify-between bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-4 rounded-lg hover:shadow-xl transition">
+        <div class="flex items-center">
+          <div class="bg-white rounded-full p-2 mr-4">
+            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+            </svg>
+          </div>
+          <div class="text-left">
+            <div class="font-semibold">Chainge Wallet</div>
+            <div class="text-sm text-green-100">Via KasWare API</div>
+          </div>
+        </div>
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
+
+      <div class="mt-6 text-center text-sm text-gray-500">
+        <p>New to Kaspa? <a href="https://kaspa.org" target="_blank" class="text-purple-600 hover:underline">Learn more</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/wallet-integration.js"></script>
   <script src="/js/app.js"></script>
 </body>
 </html>

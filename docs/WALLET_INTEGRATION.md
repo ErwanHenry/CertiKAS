@@ -22,35 +22,27 @@ CertiKAS supports multiple Kaspa wallets for content certification. This guide h
 - ✅ KRC-20 token support (for Igra rewards)
 - ✅ Message signing for certification
 - ✅ Active development and community
+- ✅ Most widely used Kaspa wallet
 
 ---
 
-### 2. Kaspa Web Wallet
-**Type:** Web-based
-**Platform:** Any browser (no extension needed)
-**URL:** https://wallet.kaspanet.io
+### 2. Kastle Wallet
+**Type:** Browser Extension
+**Platform:** Chrome, Edge
+**Features:** KNS support, KRC-20 & KRC-721, Layer 2 ready
 
-**Features:**
-- ✅ No installation required
-- ✅ Works on all platforms (desktop, mobile)
-- ✅ Official Kaspa wallet
-- ⚠️ Requires browser redirect for authentication
+**Install:**
+- Chrome: [Kastle on Chrome Web Store](https://chromewebstore.google.com/detail/oambclflhjfppdmkghokjmpppmaebego)
+- GitHub: [forbole/kastle](https://github.com/forbole/kastle)
+- Docs: [docs.kastle.cc](https://docs.kastle.cc)
 
-**Use Case:** Best for quick access without installing extensions
-
----
-
-### 3. Chainge Wallet
-**Type:** Multi-chain wallet via KasWare API
-**Platform:** Mobile & Desktop
-
-**Features:**
-- ✅ Cross-chain DEX integration
-- ✅ Self-custodial security
-- ✅ Kaspa integration via KasWare API
-- ✅ Swap KRC-20 tokens directly
-
-**Note:** Chainge uses KasWare API for Kaspa integration
+**Why Kastle?**
+- ✅ Fast and user-friendly interface
+- ✅ KNS (Kaspa Name Service) integration
+- ✅ KRC-20 & KRC-721 NFT support
+- ✅ Kaspa Layer 2 support (future-ready)
+- ✅ Built by Forbole (trusted blockchain infrastructure)
+- ✅ Full dApp connectivity
 
 ---
 
@@ -58,17 +50,19 @@ CertiKAS supports multiple Kaspa wallets for content certification. This guide h
 
 ### Step 1: Install a Wallet
 
-**Option A: KasWare (Recommended)**
+**Option A: KasWare (Most Popular)**
 1. Go to Chrome Web Store
 2. Search "KasWare Wallet"
 3. Click "Add to Chrome"
 4. Create new wallet or import existing seed phrase
 5. Save your seed phrase securely ⚠️
 
-**Option B: Kaspa Web Wallet**
-1. Visit https://wallet.kaspanet.io
-2. Create new wallet or restore from seed
-3. No installation needed!
+**Option B: Kastle (KNS Support)**
+1. Go to Chrome Web Store
+2. Search "Kastle Wallet"
+3. Click "Add to Chrome"
+4. Set up your wallet with seed phrase
+5. Enjoy KNS domain integration!
 
 ---
 
@@ -77,10 +71,9 @@ CertiKAS supports multiple Kaspa wallets for content certification. This guide h
 1. Visit CertiKAS (https://certikas.org or your Railway URL)
 2. Click **"Connect Wallet"** button in the top-right
 3. Select your preferred wallet:
-   - **KasWare** for browser extension
-   - **Kaspa Web Wallet** for browser-based
-   - **Chainge** if you have KasWare installed
-4. Approve the connection request
+   - **KasWare** for KRC-20 support and widest compatibility
+   - **Kastle** for KNS domains and Layer 2 features
+4. Approve the connection request in your wallet
 5. Your wallet address appears in the navbar 🎉
 
 ---
@@ -98,7 +91,7 @@ await window.connectKaspaWallet();
 
 // Connect specific wallet
 await window.connectKaspaWallet('kasware'); // KasWare
-await window.connectKaspaWallet('webwallet'); // Web wallet
+await window.connectKaspaWallet('kastle'); // Kastle
 ```
 
 #### Get Address

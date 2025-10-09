@@ -1,6 +1,6 @@
 /**
  * CertiKAS Wallet Integration Module
- * Supports: KasWare, Kaspa Web Wallet, Chainge (via KasWare API)
+ * Supports: KasWare, Kastle
  */
 
 class KaspaWalletIntegration {
@@ -29,6 +29,10 @@ class KaspaWalletIntegration {
     if (window.kasware) {
       this.setupKasWareListeners();
     }
+
+    if (window.kastle) {
+      this.setupKastleListeners();
+    }
   }
 
   /**
@@ -37,8 +41,7 @@ class KaspaWalletIntegration {
   detectWallets() {
     const wallets = {
       kasware: typeof window.kasware !== 'undefined',
-      webWallet: false, // Web wallet requires iframe/redirect
-      chainge: typeof window.kasware !== 'undefined' // Chainge uses KasWare API
+      kastle: typeof window.kastle !== 'undefined'
     };
 
     console.log('🔍 Detected Kaspa wallets:', wallets);
@@ -65,6 +68,30 @@ class KaspaWalletIntegration {
       console.log('🌐 Network changed:', network);
       this.emit('networkChange', network);
     });
+  }
+
+  /**
+   * Setup Kastle wallet event listeners
+   */
+  setupKastleListeners() {
+    // Listen for account changes
+    window.kastle.on('accountsChanged', (accounts) => {
+      console.log('📍 Kastle account changed:', accounts);
+      if (accounts && accounts.length > 0) {
+        this.currentAddress = accounts[0];
+        this.emit('accountChange', accounts[0]);
+      } else {
+        this.disconnect();
+      }
+    });
+
+    // Listen for network changes
+    if (window.kastle.on) {
+      window.kastle.on('networkChanged', (network) => {
+        console.log('🌐 Kastle network changed:', network);
+        this.emit('networkChange', network);
+      });
+    }
   }
 
   /**
@@ -112,26 +139,49 @@ class KaspaWalletIntegration {
   }
 
   /**
-   * Connect to Kaspa Web Wallet (via redirect)
+   * Connect to Kastle wallet
    */
-  async connectWebWallet() {
+  async connectKastle() {
     try {
-      console.log('🌐 Redirecting to Kaspa Web Wallet...');
+      if (typeof window.kastle === 'undefined') {
+        throw new Error('Kastle wallet is not installed. Please install from Chrome Web Store.');
+      }
 
-      // Store return URL
-      const returnUrl = window.location.href;
-      sessionStorage.setItem('certikas_return_url', returnUrl);
+      console.log('🔗 Connecting to Kastle wallet...');
+      const accounts = await window.kastle.requestAccounts();
 
-      // Redirect to web wallet with callback
-      const walletUrl = `https://wallet.kaspanet.io/?return=${encodeURIComponent(returnUrl)}`;
-      window.location.href = walletUrl;
+      if (accounts && accounts.length > 0) {
+        this.currentAddress = accounts[0];
+        this.currentWallet = window.kastle;
+        this.walletType = 'kastle';
 
-      return {
-        success: true,
-        message: 'Redirecting to Kaspa Web Wallet...'
-      };
+        // Get network info (if available)
+        let network = 'mainnet';
+        try {
+          network = await window.kastle.getNetwork();
+        } catch (e) {
+          console.log('Network info not available for Kastle');
+        }
+
+        console.log('✅ Connected to Kastle:', {
+          address: this.currentAddress,
+          network: network
+        });
+
+        this.emit('connect', {
+          address: this.currentAddress,
+          walletType: 'kastle',
+          network: network
+        });
+
+        return {
+          success: true,
+          address: this.currentAddress,
+          network: network
+        };
+      }
     } catch (error) {
-      console.error('❌ Web Wallet connection failed:', error);
+      console.error('❌ Kastle connection failed:', error);
       this.emit('error', error);
       throw error;
     }
@@ -144,10 +194,10 @@ class KaspaWalletIntegration {
     try {
       if (preferredWallet === 'kasware' || (preferredWallet === 'auto' && window.kasware)) {
         return await this.connectKasWare();
-      } else if (preferredWallet === 'webwallet') {
-        return await this.connectWebWallet();
+      } else if (preferredWallet === 'kastle' || (preferredWallet === 'auto' && window.kastle)) {
+        return await this.connectKastle();
       } else {
-        throw new Error('No Kaspa wallet detected. Please install KasWare or use Kaspa Web Wallet.');
+        throw new Error('No Kaspa wallet detected. Please install KasWare or Kastle wallet.');
       }
     } catch (error) {
       console.error('❌ Wallet connection failed:', error);
@@ -250,6 +300,23 @@ class KaspaWalletIntegration {
         };
       } catch (error) {
         console.error('❌ Message signing failed:', error);
+        throw error;
+      }
+    }
+
+    if (this.walletType === 'kastle') {
+      try {
+        console.log('✍️ Signing message with Kastle...');
+        const signature = await window.kastle.signMessage(message);
+
+        return {
+          signature: signature,
+          address: this.currentAddress,
+          message: message,
+          timestamp: Date.now()
+        };
+      } catch (error) {
+        console.error('❌ Kastle message signing failed:', error);
         throw error;
       }
     }

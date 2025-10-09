@@ -309,8 +309,7 @@ function setupWalletListeners() {
   const modal = document.getElementById('walletModal');
   const closeModal = document.getElementById('closeModal');
   const kaswareBtn = document.getElementById('connectKasWare');
-  const webWalletBtn = document.getElementById('connectWebWallet');
-  const chaingeBtn = document.getElementById('connectChainge');
+  const kastleBtn = document.getElementById('connectKastle');
 
   // Open modal
   connectBtn.addEventListener('click', () => {
@@ -345,20 +344,10 @@ function setupWalletListeners() {
     }
   });
 
-  // Web wallet
-  webWalletBtn.addEventListener('click', async () => {
+  // Kastle wallet
+  kastleBtn.addEventListener('click', async () => {
     try {
-      await connectWallet('webwallet');
-      modal.classList.add('hidden');
-    } catch (error) {
-      alert(error.message);
-    }
-  });
-
-  // Chainge wallet (uses KasWare API)
-  chaingeBtn.addEventListener('click', async () => {
-    try {
-      await connectWallet('kasware'); // Chainge uses KasWare API
+      await connectWallet('kastle');
       modal.classList.add('hidden');
     } catch (error) {
       alert(error.message);
